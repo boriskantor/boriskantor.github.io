@@ -19,6 +19,12 @@ function reportWindowSize() {
     canvasElement.height = parseFloat(window.innerHeight)*0.9;
     wTemp = parseFloat(window.innerWidth);
     hTemp = parseFloat(window.innerHeight)*0.9;
+    camera.g.width = wTemp;
+    camera.g.height = hTemp;
+    videoElement.width = wTemp;
+    videoElement.height = hTemp;
+    camera.video = videoElement;
+    camera.start();
 }
 
 window.onresize = reportWindowSize;
@@ -297,12 +303,15 @@ hands.setOptions({
 });
 hands.onResults(onResults);
 
-const camera = new Camera(videoElement, {
+var camera = new Camera(videoElement, {
   onFrame: async () => {
     camera.g.width = wTemp;
     camera.g.height = hTemp;
-      console.log(camera);
-    await hands.send({image: videoElement});
+    console.log(camera);
+      let stream = {image: videoElement}
+      stream.width = wTemp;
+      stream.height = hTemp;
+    await hands.send(stream);
   },
     width: wTemp,
     height: hTemp
@@ -310,4 +319,5 @@ const camera = new Camera(videoElement, {
 
 
 camera.start();
+
 
